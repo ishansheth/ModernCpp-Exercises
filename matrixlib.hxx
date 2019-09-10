@@ -69,8 +69,20 @@ namespace ips{
 
     T& operator[](unsigned int i) const {
       return data[i];
-    }    
+    }
+
   };
+
+
+  template<typename T>
+  T* begin(vectorf<T>& x){
+    return x.size() ? &x[0]:nullptr;
+  }
+
+  template<typename T>
+  T* end(vectorf<T>& x){
+    return begin(x) + x.size();
+  }
 
   template<typename T>
   class vector_sum{
@@ -194,7 +206,6 @@ namespace ips{
   inline sum_type_t<T,P...> sum(T t, P ...p){
     return t + sum(p...);
   }
-
 
   
   template<typename T>
@@ -387,5 +398,33 @@ namespace ips{
   inline transposed_view<T> trans(T& A){
     return transposed_view<T>(A);
   }
- 
+
+
+  template<typename Range,typename Value>
+  void print_interval(const Range& r,const Value& v,std::ostream& os = std::cout){
+
+    using std::begin,std::end;
+
+    auto it = std::find(begin(r),end(r),v),it2 = it;
+
+    ++it2;
+    if(it == end(r)){
+      std::cout<<"value not found"<<std::endl;
+      return;
+    }
+
+    auto past = std::find(it2,end(r),v);
+
+    if(past == end(r)){
+      std::cout<<"value not found"<<std::endl;
+      return;
+    }
+    
+    for(;it != past;++it)
+      os<<*it<<" ";
+
+    os<<"\n";
+    
+  }
+
 }
