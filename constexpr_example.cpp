@@ -1,8 +1,10 @@
 #include <iostream>
+#include <limits>
+#include <cstring>
+#include <cmath>
 
 using namespace std;
 
-namespace preh {
 
     constexpr double square_d(double x)
     {
@@ -27,12 +29,41 @@ namespace preh {
 	// 	count++;
 	return count;
     }
-}
+
+  class Exam
+  {
+    int points;
+  public:
+    constexpr Exam(int a): points(a){}
+    int getPoints() const { return points; }
+  };
+
+  template<typename T = std::uint32_t>
+  T constexpr14_bin(const char* t)
+  {
+    T x = 0;
+    std::size_t b = 0;
+    int base = 1;
+
+    for(int i = strlen(t)-1; i >= 0 ; i--)
+      {
+	if(b > std::numeric_limits<T>::digits)
+	  throw std::overflow_error("Too many bits");
+	
+	if(t[i] == '1')
+	  {
+	    x += base;
+	    b++;
+	  }
+	base = base * 2;
+      }
+    return x;
+  }
+  
 
 
 int main (int argc, char* argv[]) 
 {
-    using namespace preh;
 
     constexpr double sq3= square_d(3.0);
     constexpr double sq4= square(4.0);
@@ -40,6 +71,14 @@ int main (int argc, char* argv[])
     cout << "popcount(0x11000) = " << popcount(0x11000) << endl;
     cout << "popcount(0b11000110001101110000) = " << popcount(0b1100'0110'0011'0111'0000ull) << endl;
 
+    constexpr Exam e = Exam(100);
+    std::cout<<e.getPoints()<<std::endl;
+
+    std::cout<<constexpr14_bin("111")<<std::endl;
+    std::cout<<constexpr14_bin("101")<<std::endl;
+    std::cout<<constexpr14_bin("100")<<std::endl;
+    std::cout<<constexpr14_bin("001")<<std::endl;
+    
     return 0;
 }
 

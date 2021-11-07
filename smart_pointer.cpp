@@ -4,7 +4,31 @@
 
 using namespace std;
 
+class client
+{
+  std::unique_ptr<int> a;
 
+public:
+  client(int z):a(std::make_unique<int>(z))
+  {}
+  
+  client(client&& other):a(std::move(other.a))
+  {}
+
+  client& operator=(client&& other)
+  {
+    if(this != &other)
+      a = std::move(other.a);
+
+    return *this;
+  }
+  
+  ~client()=default;
+  void print()
+  {
+    std::cout<<"a:"<<*a<<std::endl;
+  }
+};
 
 int main (int argc, char* argv[]) 
 {
@@ -32,8 +56,10 @@ int main (int argc, char* argv[])
     int* pi3= new int(19);
     shared_ptr<int> si31(pi3), si32(pi3);
     cout << "si31 = " << *si31 << ", use_count = " << si31.use_count() << endl;
-    
 
+    client c1(5);
+    client c2 = std::move(c1);
+    
     return 0;
 }
 
