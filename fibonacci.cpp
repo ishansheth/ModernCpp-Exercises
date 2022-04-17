@@ -4,24 +4,28 @@ using namespace std;
 
 namespace preh {
 
+    // calculating the compile time fibonacci sequence
+
+    // template with numeric parameter
     template <long N>
     struct fibo_alt
     {
-	static const long value= fibo_alt<N-1>::value + fibo_alt<N-2>::value;
-	// static const long value= N <= 2 ? 1 : fibo_alt<N-1>::value + fibo_alt<N-2>::value;
+    	static const long value= fibo_alt<N-1>::value + fibo_alt<N-2>::value;
     };
 
+    // template specialization for with numeric parameter value 1
     template <>
     struct fibo_alt<1>
     {
-	static const long value= 1;
+	    static const long value= 1;
     };
 
+    // template specialization for with numeric parameter value 2
     template <>
-    struct fibo_alt<2>
-      : fibo_alt<1>
+    struct fibo_alt<2>: fibo_alt<1>
     {};
 
+    // calculating fibonacci sequence at compile time usign constexpr function
     constexpr long fibo(long n)
     {
 	return n <= 2 ? 1 : fibo(n-1) + fibo(n-2);
