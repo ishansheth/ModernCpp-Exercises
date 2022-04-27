@@ -35,12 +35,36 @@ class SimplexStorage
         }
 };
 
+/*
+https://www.fluentcpp.com/2017/06/02/write-template-metaprogramming-expressively/
+*/
+
+template<typename...>
+using try_to_instantiate = void;
+
+template<typename T, typename = void>
+struct is_incrementable : std::false_type
+{};
+
+template<typename T>
+struct is_incrementable<T,  try_to_instantiate< decltype(++std::declval<T&>()) >>: std::true_type
+{};
+
+constexpr std::size_t sample_func()
+{
+    return 10;
+}
+
 int main()
 {
-    SimplexStorage<5> storage_collection;
+    SimplexStorage<sample_func()> storage_collection;
     storage_collection.getSimplexes<1>().print();
     storage_collection.getSimplexes<2>().print();
     storage_collection.getSimplexes<3>().print();
     storage_collection.getSimplexes<4>().print();
     storage_collection.getSimplexes<5>().print();
+
+    std::cout<<"If int incrementable:"<<is_incrementable<int>::value<<std::endl;
+    std::cout<<"If string incrementable:"<<is_incrementable<std::string>::value<<std::endl;
+
 }
