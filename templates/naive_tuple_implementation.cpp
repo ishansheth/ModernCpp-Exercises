@@ -1,5 +1,8 @@
 #include <iostream>
 
+/*
+Example from the book: C++ programming by bjarne stroustrup
+*/
 /*===========================================================================================================*/
 namespace ips
 {
@@ -198,6 +201,9 @@ namespace ips
 int main()
 {
   ips::Tuple<double,char,int,std::string> x{1.1,'a',10,"ishansheth"};
-  std::cout<<ips::get<0>(x);
+  std::cout<<ips::get<0>(x)<<std::endl;
+  std::cout<<ips::get<1>(x)<<std::endl;
+  std::cout<<ips::get<2>(x)<<std::endl;
+  std::cout<<ips::get<3>(x)<<std::endl;
 
 }

@@ -65,6 +65,31 @@ auto take_front(T&& tuple)
     return take_front_impl(std::forward<T>(tuple),std::make_index_sequence<N>{});
 }
 
+
+
+template <class F, std::size_t... Is>
+constexpr auto index_apply_impl(F f,
+                                std::index_sequence<Is...>) {
+    return f(std::integral_constant<std::size_t,Is>{}...);
+}
+
+template <size_t N, class F>
+constexpr auto index_apply(F f) {
+    return index_apply_impl(f, std::make_index_sequence<N>{});
+}
+
+
+template<std::size_t N,typename T>
+auto take_frontC14(T&& tuple)
+{
+    return index_apply<N>(
+        [&](auto... Is) 
+        {
+            return std::make_tuple(std::get<Is>(tuple)...);
+        });
+}
+
+
 int main()
 {
     auto t1 = std::make_tuple(1,"str",1.5f);
@@ -77,4 +102,8 @@ int main()
     auto t4 = std::make_tuple(1,3.4,'a',"ishan");
     auto t5 = take_front<2>(t4);
     std::cout<<std::get<0>(t5)<<','<<std::get<1>(t5)<<std::endl;
+
+    auto t6 = take_frontC14<2>(t4);
+    std::cout<<std::get<0>(t6)<<','<<std::get<1>(t6)<<std::endl;
+
 }
