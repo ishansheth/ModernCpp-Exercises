@@ -9,16 +9,12 @@ https://www.fluentcpp.com/2018/11/02/variable-number-compile-time/
 
 template<int k> struct Simplex { void print(){ std::cout << k << '\n';} };
 
-template<std::size_t n>
-class SimplexStorage
-{
-        template<std::size_t ... ks>
-        using StorageImpl = std::tuple<Simplex<ks>...>;
+template <std::size_t n> class SimplexStorage {
+  template <std::size_t... ks> using StorageImpl = std::tuple<Simplex<ks>...>;
 
-        template<std::size_t ... ks>
-        static StorageImpl<(1+ks)...> make_storage(std::index_sequence<ks...>)
-        {
-            return StorageImpl<(1+ks)...>{};
+  template <std::size_t... ks>
+  static StorageImpl<(1 + ks)...> make_storage(std::index_sequence<ks...>) {
+    return StorageImpl<(1 + ks)...>{};
         }
 
         using Storage = decltype(make_storage(std::make_index_sequence<n>{}));
@@ -115,6 +111,9 @@ class FantasticCollection
     }
 };
 
+/*
+    https://riptutorial.com/cplusplus/example/19276/variadic-template-data-structures
+*/
 
 template<std::size_t idx,typename...Rest>
 struct GetHelper{};
@@ -135,6 +134,11 @@ struct DataStructure<T,Rest...>
     template<std::size_t idx>
     auto get()
     {
+        /*
+            The reason we can't define the required functionality directly in DataStructure's get is 
+            because (as we will shortly see) we would need to specialise on idx - 
+            but it isn't possible to specialise a template member function without specialising the containing class template.
+        */
         return GetHelper<idx,DataStructure<T,Rest...>>::get(*this);
     }
 };
@@ -165,6 +169,7 @@ int main()
     storage_collection.getSimplexes<2>().print();
     storage_collection.getSimplexes<3>().print();
     storage_collection.getSimplexes<4>().print();
+    
     storage_collection.getSimplexes<5>().print();
 
     std::cout<<"If int incrementable:"<<is_incrementable<int>::value<<std::endl;

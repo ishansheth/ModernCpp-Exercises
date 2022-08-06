@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstring>
 #include <tuple>
+#include <cassert>
 
 using namespace std;
 
@@ -90,7 +91,7 @@ typename std::enable_if< N1 == (sizeof...(Args)),bool>::type checkSingleStructs(
 }
 
 template<int N1,typename T,typename...Args>
-typename std::enable_if< (N1+1) <= (sizeof...(Args)-1),bool>::type checkSingleStructs(T& t)
+typename std::enable_if< N1 < (sizeof...(Args)),bool>::type checkSingleStructs(T& t)
 {
     auto a = std::get<N1>(t);
     auto b = std::get<N1+1>(t);
@@ -122,7 +123,7 @@ int main (int argc, char* argv[])
     Header h2 = {2,std::array<uint8_t,8>{0,0,0,0,0,0,0,0}};
 
     checkPayload(1,h1,3,h2);
-
     return 0;
+
 }
 

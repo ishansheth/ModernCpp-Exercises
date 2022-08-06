@@ -43,8 +43,7 @@ class MyContainer
     
     public:
     
-    template<typename U>
-    MyContainer(const std::initializer_list<U>& elements): m_container{elements},m_cnt(0),m_size(m_container.size())
+    MyContainer(const std::initializer_list<T>& elements): m_container{elements},m_cnt(0),m_size(m_container.size())
     {}
     
     using IteratorType = decltype(m_container.begin());
@@ -52,13 +51,11 @@ class MyContainer
     
     MyItertaor<IteratorType> begin()
     {
-        std::cout<<"in begin"<<std::endl;
         return MyItertaor<IteratorType>(m_container.begin());
     }
     
     MyItertaor<IteratorType> end()
     {
-        std::cout<<"in end"<<std::endl;
         return MyItertaor<IteratorType>(m_container.end());
     }
 

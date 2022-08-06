@@ -22,19 +22,32 @@ struct B
   virtual void foo();
 };
 
-constexpr int on_stack_max = sizeof(std::string);
+constexpr int on_stack_max = sizeof(int);
 
 template<typename T>
 struct On_heap
 {
-  On_heap(): p(new T){}
+  On_heap(): p(new T[100]){std::cout<<"allocating on heap"<<std::endl;}
   ~On_heap(){delete p;}
 
-  T& operator*(){return *p;}
-  T* operator->(){return p;}
+  T& operator*()
+  {
+    return *p;
+  }
+
+  T* operator->()
+  {
+    return p;
+  }
+
+  T& operator[](std::size_t index)
+  {
+    return p[index];
+  }
 
   On_heap(const On_heap&) = delete;
   On_heap& operator=(const On_heap&) = delete;
+
 private:
   T* p;
 };
@@ -42,15 +55,29 @@ private:
 template<typename T>
 struct Scoped
 {
-  Scoped(){}
+  Scoped(){std::cout<<"allocating on stack"<<std::endl;}
 
-  T& operator*(){return p;}
-  T* operator->(){return &p;}
+  T& operator*()
+  {
+    return p;
+  }
+
+  T* operator->()
+  {
+    return &p;
+  }
+
+  T& operator[](std::size_t index)
+  {
+    return p[index];
+  }
+
 
   Scoped(const Scoped&) = delete;
   Scoped& operator=(const Scoped&) = delete;
+
 private:
-  T p;
+  T p[100];
 };
 
 template<typename T>
@@ -80,11 +107,12 @@ struct Y
 
 void f()
 {
-  typename Obj_holder<double>::type v1;    // v1 type is Scoped<double>, on stack
-  typename Obj_holder<std::array<double,200>>::type v2;   //v2 type is On_heap<std::array>, on heap
+  typename Obj_holder<char>::type v1;    // v1 type is Scoped<double>, on stack
+  typename Obj_holder<double>::type v2;   //v2 type is On_heap<std::array>, on heap
 
-  *v1 = 7.7;
-  (*v2)[77] = 9.9;
+  v1[10] = 7.7;
+  v2[77] = 9.9;
+
 }
 
 int main()
@@ -92,7 +120,7 @@ int main()
   std::cout<<std::is_polymorphic<A>::value<<std::endl;
   std::cout<<std::is_polymorphic<B>::value<<std::endl;
 
-  Conditional<(sizeof(int)>4),X,Y>{}(7);   // make an X or Y and call it
-  
+  Conditional<(sizeof(int)>4),X,Y>{}(7);   // create an object of X or Y and call it
+  f();
 }
 
