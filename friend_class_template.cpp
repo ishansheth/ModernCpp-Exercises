@@ -1,8 +1,4 @@
-#include "json.hpp"
 #include <iostream>
-
-using json = nlohmann::json;
-
 
 template<typename T> class A;
 
